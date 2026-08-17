@@ -67,7 +67,6 @@ namespace SAIN.Preset.BotSettings.SAINSettings.Categories
         {
             settings.Core.VisibleAngle = VisibleAngle;
             settings.Core.VisibleDistance = VisibleDistance;
-            settings.Core.GainSightCoef = GainSightCoef;
             settings.Core.AccuratySpeed = AccuratySpeed;
             settings.Core.ScatteringPerMeter = ScatteringPerMeter;
             settings.Core.ScatteringClosePerMeter = ScatteringClosePerMeter;

@@ -10,6 +10,7 @@ using UnityEngine;
 
 namespace SAIN.Patches.Generic.Fixes
 {
+#if false
     internal class RunToEnemyUpdatePatch : ModulePatch
     {
         protected override MethodBase GetTargetMethod()
@@ -294,4 +295,5 @@ namespace SAIN.Patches.Generic.Fixes
             return true;
         }
     }
+#endif
 }

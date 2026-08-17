@@ -316,17 +316,6 @@ namespace SAIN.SAINComponent.Classes.Mover
             var gstruct = Door.Interact(Player, type);
             if (gstruct.Succeeded)
             {
-                //Logger.LogDebug("Success");
-                switch (type)
-                {
-                    case EInteractionType.Breach:
-                        Player.vmethod_0(data.Door, gstruct.Value, null);
-                        break;
-
-                    default:
-                        Player.vmethod_1(data.Door, gstruct.Value);
-                        break;
-                }
                 return true;
             }
             return false;

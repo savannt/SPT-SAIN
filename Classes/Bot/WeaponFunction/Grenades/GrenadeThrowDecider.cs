@@ -3,7 +3,7 @@ using SAIN.Models.Enums;
 using SAIN.Preset;
 using SAIN.SAINComponent.Classes.EnemyClasses;
 using UnityEngine;
-using GrenadeThrowChecker = GClass575;
+using GrenadeThrowChecker = ThrowGrenadePlayerRequest;
 
 namespace SAIN.SAINComponent.Classes.WeaponFunction
 {
@@ -321,20 +321,7 @@ namespace SAIN.SAINComponent.Classes.WeaponFunction
                 return false;
             }
 
-            AIGreandeAng angle = possibleAngles.PickRandom();
-            AIGreanageThrowData throwData = GrenadeThrowChecker.CanThrowGrenade2(from, trg, _maxPower * 0.9f, angle, -1f, _minThrowDistPercent);
-
-            if (throwData.CanThrow)
-            {
-                if (Physics.Raycast(from, throwData.Direction, 1.5f, LayerMaskClass.HighPolyWithTerrainMask))
-                {
-                    Logger.LogDebug($"blocked by object, cant throw");
-                    return false;
-                }
-                BotOwner.WeaponManager.Grenades.SetThrowData(throwData);
-                return true;
-            }
-            return false;
+            return BotOwner.WeaponManager.Grenades.CanThrowGrenade(from, trg);
         }
 
         private AIGreandeAng getAngleToThrow()

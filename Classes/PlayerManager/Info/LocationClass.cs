@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using SeasonController = Class444;
 
 namespace SAIN.Components
 {
@@ -40,13 +39,7 @@ namespace SAIN.Components
             }
             _nextCheckWeatherTime = Time.time + 0.5f;
 
-            if (SeasonController.Controller == null)
-            {
-                return;
-            }
-
-            Season = SeasonController.Controller.Season;
-            Logger.LogDebug($"Got Season {Season}");
+            Season = ESeason.Summer;
             _weatherFound = true;
         }
 

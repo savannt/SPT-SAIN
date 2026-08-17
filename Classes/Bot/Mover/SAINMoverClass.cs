@@ -1,6 +1,7 @@
 ﻿using EFT;
 using SAIN.Classes.Transform;
 using SAIN.Components;
+using SAIN.Helpers;
 using SAIN.SAINComponent.SubComponents.CoverFinder;
 using System;
 using UnityEngine;
@@ -129,11 +130,28 @@ namespace SAIN.SAINComponent.Classes.Mover
         private readonly BotPathDataManual _preparedPath1;
         private readonly BotPathDataManual _preparedPath2;
 
+        public bool RunToPoint(Vector3 point, bool mustHaveCompletePath, float reachDist, ESprintUrgency urgency)
+        {
+            return RunToPoint(point, mustHaveCompletePath, reachDist, urgency, true);
+        }
+
         public bool RunToPoint(Vector3 point, bool mustHaveCompletePath = true, float reachDist = -1, ESprintUrgency urgency = ESprintUrgency.Low, bool checkSameWay = true)
         {
             if (reachDist <= 0) reachDist = BASE_DESTINATION_REACH_DIST;
-            if ((point - Bot.Transform.NavData.Position).sqrMagnitude <= reachDist * reachDist) return true;
-            if ((point - Bot.Position).sqrMagnitude <= reachDist * reachDist) return true;
+            SAINTrace.LogThrottled(
+                $"move-run-{Bot.ProfileId}",
+                0.25f,
+                $"MOVE request RunToPoint: {SAINTrace.Bot(Bot)}, point={SAINTrace.Vec(point)}, reach={reachDist:0.0}, mustComplete={mustHaveCompletePath}, urgency={urgency}, checkSame={checkSameWay}");
+            if ((point - Bot.Transform.NavData.Position).sqrMagnitude <= reachDist * reachDist)
+            {
+                SAINTrace.Log($"MOVE RunToPoint already at nav destination: {SAINTrace.Bot(Bot)}, point={SAINTrace.Vec(point)}");
+                return true;
+            }
+            if ((point - Bot.Position).sqrMagnitude <= reachDist * reachDist)
+            {
+                SAINTrace.Log($"MOVE RunToPoint already at player destination: {SAINTrace.Bot(Bot)}, point={SAINTrace.Vec(point)}");
+                return true;
+            }
 
             if (checkSameWay && TryUpdatePath(point))
             {
@@ -142,6 +160,7 @@ namespace SAIN.SAINComponent.Classes.Mover
                     _activePath.RequestStartSprint(urgency, "path updated");
                 }
                 _activePath.SetDestinationReachDistance(reachDist);
+                SAINTrace.Log($"MOVE RunToPoint updated active path: {SAINTrace.Bot(Bot)}, point={SAINTrace.Vec(point)}, status={_activePath.PathStatus}");
                 return true;
             }
 
@@ -150,21 +169,48 @@ namespace SAIN.SAINComponent.Classes.Mover
                 TriggerNewMove(path.corners, point, true, urgency, path);
                 _activePath.SetDestinationReachDistance(reachDist);
                 _activePath.PathStatus = path.status;
+                SAINTrace.Log($"MOVE RunToPoint accepted: {SAINTrace.Bot(Bot)}, point={SAINTrace.Vec(point)}, pathStatus={path.status}, corners={path.corners.Length}");
                 return true;
             }
+            SAINTrace.Log($"MOVE RunToPoint rejected: {SAINTrace.Bot(Bot)}, point={SAINTrace.Vec(point)}, mustComplete={mustHaveCompletePath}");
             return false;
+        }
+
+        public bool RunToPointByWay(NavMeshPath path, bool mustHaveCompletePath, float reachDist, ESprintUrgency urgency)
+        {
+            return RunToPointByWay(path, mustHaveCompletePath, reachDist, urgency, true);
         }
 
         public bool RunToPointByWay(NavMeshPath path, bool mustHaveCompletePath = true, float reachDist = -1, ESprintUrgency urgency = ESprintUrgency.Low, bool checkSameWay = true)
         {
-            if (path == null) return false;
-            if (path.status == NavMeshPathStatus.PathInvalid) return false;
-            if (mustHaveCompletePath && path.status != NavMeshPathStatus.PathComplete) return false;
+            if (path == null)
+            {
+                SAINTrace.Log($"MOVE RunToPointByWay rejected null path: {SAINTrace.Bot(Bot)}");
+                return false;
+            }
+            if (path.status == NavMeshPathStatus.PathInvalid)
+            {
+                SAINTrace.Log($"MOVE RunToPointByWay rejected invalid path: {SAINTrace.Bot(Bot)}");
+                return false;
+            }
+            if (mustHaveCompletePath && path.status != NavMeshPathStatus.PathComplete)
+            {
+                SAINTrace.Log($"MOVE RunToPointByWay rejected incomplete path: {SAINTrace.Bot(Bot)}, status={path.status}");
+                return false;
+            }
 
             Vector3[] pathCorners = path.corners;
-            if (pathCorners.Length <= 1) return false;
+            if (pathCorners.Length <= 1)
+            {
+                SAINTrace.Log($"MOVE RunToPointByWay rejected short path: {SAINTrace.Bot(Bot)}, corners={pathCorners.Length}, status={path.status}");
+                return false;
+            }
             Vector3 lastCorner = pathCorners[pathCorners.Length - 1];
             if (reachDist <= 0) reachDist = BASE_DESTINATION_REACH_DIST;
+            SAINTrace.LogThrottled(
+                $"move-runway-{Bot.ProfileId}",
+                0.25f,
+                $"MOVE request RunToPointByWay: {SAINTrace.Bot(Bot)}, dest={SAINTrace.Vec(lastCorner)}, reach={reachDist:0.0}, status={path.status}, corners={pathCorners.Length}, urgency={urgency}");
             if ((lastCorner - Bot.Transform.NavData.Position).sqrMagnitude <= reachDist * reachDist) return true;
             if ((lastCorner - Bot.Position).sqrMagnitude <= reachDist * reachDist) return true;
 
@@ -172,10 +218,12 @@ namespace SAIN.SAINComponent.Classes.Mover
             {
                 if (!_activePath.WantToSprint) _activePath.RequestStartSprint(urgency, "path updated");
                 _activePath.SetDestinationReachDistance(reachDist);
+                SAINTrace.Log($"MOVE RunToPointByWay updated active path: {SAINTrace.Bot(Bot)}, dest={SAINTrace.Vec(lastCorner)}, status={_activePath.PathStatus}");
                 return true;
             }
             TriggerNewMove(path.corners, lastCorner, true, urgency, path);
             _activePath.SetDestinationReachDistance(reachDist);
+            SAINTrace.Log($"MOVE RunToPointByWay accepted: {SAINTrace.Bot(Bot)}, dest={SAINTrace.Vec(lastCorner)}, pathStatus={path.status}, corners={path.corners.Length}");
             return true;
         }
 
@@ -184,33 +232,60 @@ namespace SAIN.SAINComponent.Classes.Mover
         public bool WalkToPoint(Vector3 point, bool mustHaveCompletePath = true, float reachDist = -1, bool checkSameWay = true)
         {
             if (reachDist <= 0) reachDist = BASE_DESTINATION_REACH_DIST;
+            SAINTrace.LogThrottled(
+                $"move-walk-{Bot.ProfileId}",
+                0.25f,
+                $"MOVE request WalkToPoint: {SAINTrace.Bot(Bot)}, point={SAINTrace.Vec(point)}, reach={reachDist:0.0}, mustComplete={mustHaveCompletePath}, checkSame={checkSameWay}");
             if ((point - Bot.Transform.NavData.Position).sqrMagnitude <= reachDist * reachDist) return true;
             if ((point - Bot.Position).sqrMagnitude <= reachDist * reachDist) return true;
 
             if (checkSameWay && TryUpdatePath(point))
             {
                 if (_activePath.WantToSprint) _activePath.RequestEndSprint(ESprintUrgency.None, "path updated");
+                SAINTrace.Log($"MOVE WalkToPoint updated active path: {SAINTrace.Bot(Bot)}, point={SAINTrace.Vec(point)}, status={_activePath.PathStatus}");
                 return true;
             }
             if (Bot.Mover.CanGoToPoint(point, out NavMeshPath path, mustHaveCompletePath))
             {
                 TriggerNewMove(path.corners, point, false, ESprintUrgency.None, path);
                 _activePath.SetDestinationReachDistance(reachDist);
+                SAINTrace.Log($"MOVE WalkToPoint accepted: {SAINTrace.Bot(Bot)}, point={SAINTrace.Vec(point)}, pathStatus={path.status}, corners={path.corners.Length}");
                 return true;
             }
+            SAINTrace.Log($"MOVE WalkToPoint rejected: {SAINTrace.Bot(Bot)}, point={SAINTrace.Vec(point)}, mustComplete={mustHaveCompletePath}");
             return false;
         }
 
         public bool WalkToPointByWay(NavMeshPath path, bool mustHaveCompletePath = true, float reachDist = -1, bool checkSameWay = true)
         {
-            if (path == null) return false;
-            if (path.status == NavMeshPathStatus.PathInvalid) return false;
-            if (mustHaveCompletePath && path.status == NavMeshPathStatus.PathPartial) return false;
+            if (path == null)
+            {
+                SAINTrace.Log($"MOVE WalkToPointByWay rejected null path: {SAINTrace.Bot(Bot)}");
+                return false;
+            }
+            if (path.status == NavMeshPathStatus.PathInvalid)
+            {
+                SAINTrace.Log($"MOVE WalkToPointByWay rejected invalid path: {SAINTrace.Bot(Bot)}");
+                return false;
+            }
+            if (mustHaveCompletePath && path.status == NavMeshPathStatus.PathPartial)
+            {
+                SAINTrace.Log($"MOVE WalkToPointByWay rejected partial path: {SAINTrace.Bot(Bot)}, status={path.status}");
+                return false;
+            }
 
             Vector3[] pathCorners = path.corners;
-            if (pathCorners.Length <= 1) return false;
+            if (pathCorners.Length <= 1)
+            {
+                SAINTrace.Log($"MOVE WalkToPointByWay rejected short path: {SAINTrace.Bot(Bot)}, corners={pathCorners.Length}, status={path.status}");
+                return false;
+            }
             Vector3 lastCorner = pathCorners[pathCorners.Length - 1];
             if (reachDist <= 0) reachDist = BASE_DESTINATION_REACH_DIST;
+            SAINTrace.LogThrottled(
+                $"move-walkway-{Bot.ProfileId}",
+                0.25f,
+                $"MOVE request WalkToPointByWay: {SAINTrace.Bot(Bot)}, dest={SAINTrace.Vec(lastCorner)}, reach={reachDist:0.0}, status={path.status}, corners={pathCorners.Length}");
             if ((lastCorner - Bot.Transform.NavData.Position).sqrMagnitude <= reachDist * reachDist) return true;
             if ((lastCorner - Bot.Position).sqrMagnitude <= reachDist * reachDist) return true;
 
@@ -220,11 +295,13 @@ namespace SAIN.SAINComponent.Classes.Mover
                 {
                     _activePath.RequestEndSprint(ESprintUrgency.None, "path updated");
                 }
+                SAINTrace.Log($"MOVE WalkToPointByWay updated active path: {SAINTrace.Bot(Bot)}, dest={SAINTrace.Vec(lastCorner)}, status={_activePath.PathStatus}");
                 return true;
             }
 
             TriggerNewMove(pathCorners, lastCorner, false, ESprintUrgency.None, path);
             _activePath.SetDestinationReachDistance(reachDist);
+            SAINTrace.Log($"MOVE WalkToPointByWay accepted: {SAINTrace.Bot(Bot)}, dest={SAINTrace.Vec(lastCorner)}, pathStatus={path.status}, corners={path.corners.Length}");
             return true;
         }
 
@@ -235,6 +312,10 @@ namespace SAIN.SAINComponent.Classes.Mover
 
         private void TriggerNewMove(Vector3[] pathCorners, Vector3 point, bool shallSprint, ESprintUrgency urgency, NavMeshPath path)
         {
+            SAINTrace.LogThrottled(
+                $"move-trigger-{Bot.ProfileId}",
+                0.25f,
+                $"MOVE TriggerNewMove: {SAINTrace.Bot(Bot)}, dest={SAINTrace.Vec(point)}, sprint={shallSprint}, urgency={urgency}, pathStatus={path?.status}, corners={pathCorners?.Length ?? 0}, replacing={_activePath != null}");
             if (_activePath != null)
             {
                 _activePath.Cancel();
@@ -384,6 +465,13 @@ namespace SAIN.SAINComponent.Classes.Mover
 
         public void Stop()
         {
+            if (_activePath != null || Bot.SAINLayersActive)
+            {
+                SAINTrace.LogThrottled(
+                    $"move-stop-{Bot.ProfileId}",
+                    0.5f,
+                    $"MOVE Stop: {SAINTrace.Bot(Bot)}, activePath={_activePath != null}, destination={SAINTrace.Vec(_activePath?.Destination ?? Vector3.zero)}");
+            }
             BotOwner?.Mover?.Stop();
             _activePath?.Cancel();
         }
@@ -436,7 +524,7 @@ namespace SAIN.SAINComponent.Classes.Mover
                     LeftStanceController leftStanceController = movementContext.LeftStanceController;
 
                     bool wantToPatrolStance = !movementContext.IsSprintEnabled && Bot.GoalEnemy == null;
-                    if (wantToPatrolStance != movementContext.IsInPatrol)
+                    if (wantToPatrolStance != movementContext._isInPatrol)
                     {
                         // If we are in left stance and want to patrol, reset back to normal  before setting patrol next update.
                         //if (wantToPatrolStance && leftStance?.LeftStance == true)

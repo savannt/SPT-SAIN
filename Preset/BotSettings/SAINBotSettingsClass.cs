@@ -62,6 +62,11 @@ namespace SAIN.Preset.BotSettings
                 string name = BotType.Name;
                 WildSpawnType wildSpawnType = BotType.WildSpawnType;
 
+                if (SAINSettings.ContainsKey(wildSpawnType))
+                {
+                    continue;
+                }
+
                 if (BotSpawnController.StrictExclusionList.Contains(wildSpawnType))
                 {
                 }
@@ -160,6 +165,11 @@ namespace SAIN.Preset.BotSettings
             {
                 string name = BotType.Name;
                 WildSpawnType wildSpawnType = BotType.WildSpawnType;
+
+                if (EFTSettings.ContainsKey(wildSpawnType))
+                {
+                    continue;
+                }
 
                 if (!EFTSettings.ContainsKey(wildSpawnType))
                 {

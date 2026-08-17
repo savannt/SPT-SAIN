@@ -25,9 +25,9 @@ namespace SAIN.SAINComponent.Classes.WeaponFunction
             get
             {
                 IBotAiming aim = BotOwner.AimingManager.CurrentAiming;
-                if (aim is BotAimingClass aimClass)
+                if (aim is BotAimingData aimData)
                 {
-                    return aimClass.AimStatus_0;
+                    return aimData.Status;
                 }
                 if (aim != null && aim.IsReady)
                 {
@@ -37,9 +37,9 @@ namespace SAIN.SAINComponent.Classes.WeaponFunction
             }
             set
             {
-                if (BotOwner?.AimingManager?.CurrentAiming is BotAimingClass aimClass)
+                if (BotOwner?.AimingManager?.CurrentAiming is BotAimingData aimData)
                 {
-                    aimClass.AimStatus_0 = value;
+                    aimData.Status = value;
                 }
             }
         }
@@ -126,11 +126,7 @@ namespace SAIN.SAINComponent.Classes.WeaponFunction
 
         public void LoseAimTarget()
         {
-            if (BotOwner.AimingManager.CurrentAiming is BotAimingClass aimClass &&
-                aimClass.AimStatus_0 != AimStatus.NoTarget)
-            {
-                aimClass.AimStatus_0 = AimStatus.NoTarget;
-            }
+            BotOwner.AimingManager.CurrentAiming?.LoseTarget();
         }
 
         private void CheckLoseTarget()

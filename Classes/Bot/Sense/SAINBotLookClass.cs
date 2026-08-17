@@ -5,10 +5,6 @@ using SAIN.SAINComponent.Classes.EnemyClasses;
 using System.Collections.Generic;
 using UnityEngine;
 
-// Found in Botowner.Looksensor
-using EnemyVisionCheck = GClass582;
-using LookAllData = GClass607;
-
 namespace SAIN.SAINComponent.Classes
 {
     public class SAINBotLookClass : BotBase
@@ -38,18 +34,13 @@ namespace SAIN.SAINComponent.Classes
         {
             for (int i = 0; i < lookData.ReportsData.Count; i++)
             {
-                EnemyVisionCheck enemyVision = lookData.ReportsData[i];
-                BotOwner.BotsGroup.ReportAboutEnemy(enemyVision.Enemy, enemyVision.VisibleOnlyBySence, BotOwner);
+                ReportAiData report = lookData.ReportsData[i];
+                BotOwner.BotsGroup.ReportAboutEnemy(report.Enemy, report.VisibleOnlyBySence, BotOwner);
             }
 
             if (lookData.ReportsData.Count > 0)
             {
                 BotOwner.Memory.SetLastTimeSeeEnemy();
-            }
-
-            if (lookData.ShallRecalcGoal)
-            {
-                //BotOwner.CalcGoal();
             }
 
             lookData.Reset();
@@ -59,35 +50,27 @@ namespace SAIN.SAINComponent.Classes
         {
             int updated = 0;
             var lookSensor = bot.BotOwner.LookSensor;
-
             var transform = bot.Transform;
-            Vector3 viewPosition = transform.EyePosition;
-            var weaponRoot = transform.WeaponRoot;
 
-            // Update look sensors fields since we are not calling the original botowner code that does this.
-            // We should check for changes between tarkov updates.
-			lookSensor.WeaponRootPoint = weaponRoot;
-			lookSensor.LookSensorShootPosition.UpdateShootPosition(weaponRoot);
-			lookSensor._headPoint = viewPosition;
+            lookSensor._weaponRootPoint = transform.WeaponRoot;
+            lookSensor._lookSensorShootPosition.UpdateShootPosition(transform.WeaponRoot);
+            lookSensor.HeadPoint = transform.EyePosition;
 
             lookAll.Reset();
             var enemies = bot.EnemyController.EnemiesArray;
             foreach (Enemy enemy in enemies)
+            {
                 if (enemy.ShallCheckLook(currentTime, out float deltaTime))
                 {
                     enemy.EnemyInfo.CheckLookEnemy(lookAll, deltaTime);
                     updated++;
                 }
+            }
             return updated;
         }
 
         private void SetNotVis(Enemy enemy)
         {
-            foreach (var part in enemy.EnemyInfo.AllActiveParts.Values)
-            {
-                part.UpdateVisibility(BotOwner, false, false, false, Time.fixedDeltaTime);
-            }
-
             if (enemy.EnemyInfo.IsVisible)
             {
                 enemy.EnemyInfo.SetVisible(false);

@@ -84,7 +84,7 @@ namespace SAIN.Components
         public bool NoBushESPActive { get; private set; } = false;
 
         private float NoBushTimer = 0f;
-        private Vector3 HeadPosition => BotOwner.LookSensor._headPoint;
+        private Vector3 HeadPosition => BotOwner.LookSensor.HeadPoint;
 
         public bool NoBushESPCheck()
         {
@@ -176,10 +176,7 @@ namespace SAIN.Components
                     enemy.SetCanShoot(false);
                     enemy.SetVisible(false);
 
-                    if (BotOwner.AimingManager.CurrentAiming is BotAimingClass aimData && aimData.AimStatus_0 != AimStatus.NoTarget)
-                    {
-                        aimData.AimStatus_0 = AimStatus.NoTarget;
-                    }
+                    BotOwner.AimingManager.CurrentAiming?.LoseTarget();
 
                     var vision = SAIN?.EnemyController.GetEnemy(enemy.ProfileId, false)?.Vision;
                     if (vision != null)

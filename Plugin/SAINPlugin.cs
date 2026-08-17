@@ -9,7 +9,9 @@ using SAIN.Plugin;
 using SAIN.Preset;
 using SAIN.Preset.GlobalSettings;
 using SPT.Reflection.Patching;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using static SAIN.AssemblyInfoClass;
 
@@ -37,18 +39,59 @@ namespace SAIN
 
         public void Awake()
         {
-            /*
-            if (!VersionChecker.CheckEftVersion(Logger, Info, Config))
+            ResetStartupLog();
+            WriteStartupLog("Awake entered.");
+            try
             {
-                throw new Exception("Invalid EFT Version");
-            }
-            */
+                BindConfigs();
+                WriteStartupLog("Config bound.");
 
-            PresetHandler.Init();
-            BindConfigs();
-            InitPatches();
-            BigBrainHandler.Init();
-            Vector.Init();
+                /*
+                if (!VersionChecker.CheckEftVersion(Logger, Info, Config))
+                {
+                    throw new Exception("Invalid EFT Version");
+                }
+                */
+
+                PresetHandler.Init();
+                WriteStartupLog("PresetHandler initialized.");
+                InitPatches();
+                WriteStartupLog("Harmony patches enabled.");
+                BigBrainHandler.Init();
+                WriteStartupLog("BigBrain handler initialized.");
+                Vector.Init();
+                WriteStartupLog("SAIN startup complete.");
+            }
+            catch (Exception ex)
+            {
+                WriteStartupLog($"SAIN startup failed: {ex}");
+                Logger.LogError(ex);
+                throw;
+            }
+        }
+
+        private static void ResetStartupLog()
+        {
+            try
+            {
+                string pluginFolder = Path.GetDirectoryName(typeof(SAINPlugin).Assembly.Location);
+                File.WriteAllText(Path.Combine(pluginFolder, "SAIN-startup.log"), string.Empty);
+            }
+            catch
+            {
+            }
+        }
+
+        public static void WriteStartupLog(string message)
+        {
+            try
+            {
+                string pluginFolder = Path.GetDirectoryName(typeof(SAINPlugin).Assembly.Location);
+                File.AppendAllText(Path.Combine(pluginFolder, "SAIN-startup.log"), $"[{DateTime.Now:O}] {message}{Environment.NewLine}");
+            }
+            catch
+            {
+            }
         }
 
         private void BindConfigs()
@@ -70,125 +113,42 @@ namespace SAIN
             new Patches.Components.ActivateBotComponentPatch(),
             new Patches.Components.AddGameWorldPatch(),
             new Patches.Components.GetBotController(),
+            new Patches.Components.DisableBotUpdateByUnityPatch(),
 
-            new Patches.Generic.BotOwnerActivatePatch(),
-            new Patches.Generic.StopRequestExecutePatch(),
-            new Patches.Generic.SetEnvironmentPatch(),
-            new Patches.Generic.SetPanicPointPatch(),
-            new Patches.Generic.AddPointToSearchPatch(),
-            new Patches.Generic.TurnDamnLightOffPatch(),
-            new Patches.Generic.GrenadeThrownActionPatch(),
-            new Patches.Generic.GrenadeExplosionActionPatch(),
+            new Patches.Vision.GlobalLookSettingsPatch(),
+            new Patches.Vision.NoAIESPPatch(),
+            new Patches.Vision.CheckFlashlightPatch(),
+            new Patches.Vision.DisableLookUpdatePatch(),
 
-            new Patches.Generic.ShallKnowEnemyPatch(),
-            new Patches.Generic.ShallKnowEnemyLatePatch(),
-            new Patches.Generic.HaveSeenEnemyPatch(),
+            new Patches.Shoot.Aim.DisableMalfunctionPatch(),
+            new Patches.Shoot.Aim.PlayerHitReactionDisablePatch(),
+            new Patches.Shoot.Aim.BotSteeringPitchLimitPatch(),
+            new Patches.Shoot.Aim.AimOffsetPatch(),
+            new Patches.Shoot.Aim.AimTimePatch(),
+            new Patches.Shoot.Aim.SmoothTurnPatch(),
 
-            new Patches.Generic.BlockVoiceRequestsPatch(),
-            new Patches.Generic.BlockGrenadeThrowRequestsPatch(),
-            //new Patches.Generic.BlockGrenadeThrowRequestsPatch2(),
-            new Patches.Generic.BlockRequestPatch(),
-
-            new Patches.Generic.SetInHands.SetInHands_Empty(),
-            new Patches.Generic.SetInHands.SetInHands_Food_Patch(),
-            new Patches.Generic.SetInHands.SetInHands_Grenade_Patch(),
-            new Patches.Generic.SetInHands.SetInHands_Knife_Patch(),
-            new Patches.Generic.SetInHands.SetInHands_Meds_Patch1(),
-            new Patches.Generic.SetInHands.SetInHands_Meds_Patch2(),
-            new Patches.Generic.SetInHands.SetInHands_QuickUse_Patch1(),
-            new Patches.Generic.SetInHands.SetInHands_QuickUse_Patch2(),
-            new Patches.Generic.SetInHands.SetInHands_Weapon_Patch(),
-            new Patches.Generic.SetInHands.SetInHands_Weapon_Stationary_Patch(),
-
-            new Patches.Generic.Fixes.StopSetToNavMeshPatch(),
-            new Patches.Generic.Fixes.StopSetToNavMeshPatch2(),
-            new Patches.Generic.Fixes.FightShallReloadFixPatch(),
-            new Patches.Generic.Fixes.EnableVaultPatch(),
-            new Patches.Generic.Fixes.BotMemoryAddEnemyPatch(),
-            new Patches.Generic.Fixes.BotGroupAddEnemyPatch(),
-            new Patches.Generic.Fixes.FixItemTakerPatch(),
-            new Patches.Generic.Fixes.FixItemTakerPatch2(),
-            new Patches.Generic.Fixes.RotateClampPatch(),
-            new Patches.Generic.Fixes.RunToEnemyUpdatePatch(),
-            new Patches.Generic.Fixes.DisableGrenadesPatch(),
-
-            new Patches.Movement.EncumberedPatch(),
-            new Patches.Movement.CrawlPatch(),
+            new Patches.Movement.MovementContextIsAIPatch(),
+            new Patches.Movement.CanBeSnappedPatch(),
+            new Patches.Movement.GlobalShootSettingsPatch(),
             new Patches.Movement.StopShootCauseAnimatorPatch(),
             new Patches.Movement.PoseStaminaPatch(),
             new Patches.Movement.AimStaminaPatch(),
-            new Patches.Movement.GlobalShootSettingsPatch(),
-            new Patches.Movement.MovementContextIsAIPatch(),
-            new Patches.Movement.CanBeSnappedPatch(),
-            new Patches.Movement.BotMoverManualUpdatePatch(),
-            new Patches.Movement.BotMoverManualFixedUpdatePatch(),
-            new Patches.Movement.SprintLookDirPatch(),
-            new Patches.Movement.PlayerSetPosePatch(),
 
-            new Patches.Hearing.TryPlayShootSoundPatch(),
             new Patches.Hearing.OnMakingShotPatch(),
             new Patches.Hearing.RegisterShotPatch(),
             new Patches.Hearing.OnWeaponModifiedPatch(),
             new Patches.Hearing.HearingSensorPatch(),
-
-            new Patches.Hearing.GrenadeCollisionPatch(),
-            new Patches.Hearing.GrenadeCollisionPatch2(),
-
-            new Patches.Hearing.ToggleSoundPatch(),
-            new Patches.Hearing.SpawnInHandsSoundPatch(),
-            new Patches.Hearing.PlaySwitchHeadlightSoundPatch(),
             new Patches.Hearing.BulletImpactPatch(),
-            new Patches.Hearing.TreeSoundPatch(),
-            new Patches.Hearing.DoorBreachSoundPatch(),
-            new Patches.Hearing.DoorOpenSoundPatch(),
-            new Patches.Hearing.FootstepSoundPatch(),
-            new Patches.Hearing.FikaHeadlessTempFixPatch(),
-            new Patches.Hearing.GenericMovementSoundPatch(),
-            new Patches.Hearing.SpecificStepAudioControllerPatch(),
-            new Patches.Hearing.DryShotPatch(),
-            new Patches.Hearing.ProneSoundPatch(),
-            new Patches.Hearing.SoundClipNameCheckerPatch(),
-            new Patches.Hearing.SoundClipNameCheckerPatch2(),
-            new Patches.Hearing.AimSoundPatch(),
-            new Patches.Hearing.LootingSoundPatch(),
+            new Patches.Hearing.GrenadeCollisionPatch(),
 
             new Patches.Talk.PlayerHurtPatch(),
             new Patches.Talk.PlayerTalkPatch(),
             new Patches.Talk.BotTalkPatch(),
             new Patches.Talk.BotTalkManualUpdatePatch(),
 
-            new Patches.Vision.DisableLookUpdatePatch(),
-            new Patches.Vision.UpdateLightEnablePatch(),
-            new Patches.Vision.UpdateLightEnablePatch2(),
-            new Patches.Vision.ToggleNightVisionPatch(),
-            //new Patches.Vision.SetPartPriorityPatch(),
-            new Patches.Vision.GlobalLookSettingsPatch(),
-            //new Patches.Vision.WeatherTimeVisibleDistancePatch(),
-            new Patches.Vision.NoAIESPPatch(),
-            new Patches.Vision.BotLightTurnOnPatch(),
-            new Patches.Vision.VisionSpeedPatch(),
-            new Patches.Vision.WeatherVisionPatch(),
-            new Patches.Vision.IsPointInVisibleSectorPatch(),
-            new Patches.Vision.VisionDistancePatch(),
-            new Patches.Vision.CheckFlashlightPatch(),
-
-            new Patches.Shoot.Aim.DoHitAffectPatch(),
-            new Patches.Shoot.Aim.HitAffectApplyPatch(),
-            new Patches.Shoot.Aim.PlayerHitReactionDisablePatch(),
-            //new Patches.Shoot.Aim.WeaponMoAModificationPatch(),
-            new Patches.Shoot.Aim.BotAimSteerPatch(),
-            new Patches.Shoot.Aim.HardAimDisablePatch1(),
-            new Patches.Shoot.Aim.HardAimDisablePatch2(),
-
-            new Patches.Shoot.RateOfFire.BotShootPatch(),
-            new Patches.Shoot.Aim.AimOffsetPatch(),
-            new Patches.Shoot.Aim.AimTimePatch(),
-            new Patches.Shoot.Aim.ForceNoHeadAimPatch(),
-            new Patches.Shoot.Aim.SmoothTurnPatch(),
-            new Patches.Shoot.Aim.BotSteeringPitchLimitPatch(),
-
-            new Patches.Shoot.Grenades.ResetGrenadePatch(),
             new Patches.Shoot.Grenades.SetGrenadePatch(),
+            new Patches.Shoot.Grenades.ResetGrenadePatch(),
+            new Patches.Shoot.RateOfFire.BotShootPatch(),
         ];
 
         private void InitPatches()

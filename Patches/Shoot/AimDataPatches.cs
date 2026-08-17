@@ -14,10 +14,11 @@ using SPT.Reflection.Patching;
 using System.Reflection;
 using System.Text;
 using UnityEngine;
-using HitAffectClass = GClass601;
+using HitAffectClass = MultiKeyDictionary<EBodyPart, EBodyPartColliderType, UnityEngine.Vector3>;
 
 namespace SAIN.Patches.Shoot.Aim
 {
+#if false
     internal class WeaponMoAModificationPatch : ModulePatch
     {
         private const float MIN_START_MOA_AI = 4f;
@@ -470,4 +471,5 @@ namespace SAIN.Patches.Shoot.Aim
             }
         }
     }
+#endif
 }

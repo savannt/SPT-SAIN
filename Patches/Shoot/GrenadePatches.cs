@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace SAIN.Patches.Shoot.Grenades
 {
+#if false
     public class SetGrenadePatch : ModulePatch
     {
         protected override MethodBase GetTargetMethod()
@@ -47,4 +48,5 @@ namespace SAIN.Patches.Shoot.Grenades
             botComponent.Grenade.MyGrenade = __instance.Grenade;
         }
     }
+#endif
 }

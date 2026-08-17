@@ -6,6 +6,10 @@
     <Nullable>disable</Nullable>
     <RootNamespace>SAIN</RootNamespace>
     <AssemblyName>SAIN</AssemblyName>
+    <SptInstallDir Condition="'$(SptInstallDir)' == '' and '$(SPT_INSTALL_DIR)' != ''">$(SPT_INSTALL_DIR)</SptInstallDir>
+    <SptInstallDir Condition="'$(SptInstallDir)' == ''">$(MSBuildProjectDirectory)\..\..</SptInstallDir>
+    <EftManagedDir>$(SptInstallDir)\EscapeFromTarkov_Data\Managed</EftManagedDir>
+    <BepInExPluginDir>$(SptInstallDir)\BepInEx\plugins</BepInExPluginDir>
   </PropertyGroup>
 
   <!-- targets -->
@@ -15,6 +19,9 @@
   <ItemGroup>
     <None Include="References\**" />
     <None Include="ServerMod\**" />
+    <Compile Remove="ServerModNet\**" />
+    <EmbeddedResource Remove="ServerModNet\**" />
+    <None Remove="ServerModNet\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,55 +31,56 @@
 
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\EscapeFromTarkov_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>$(EftManagedDir)\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="bsg.console.core">
-      <HintPath>..\..\EscapeFromTarkov_Data\Managed\bsg.console.core.dll</HintPath>
+      <HintPath>$(EftManagedDir)\bsg.console.core.dll</HintPath>
     </Reference>
     <Reference Include="Comfort">
-      <HintPath>..\..\EscapeFromTarkov_Data\Managed\Comfort.dll</HintPath>
+      <HintPath>$(EftManagedDir)\Comfort.dll</HintPath>
     </Reference>
     <Reference Include="Comfort.Unity">
-      <HintPath>..\..\EscapeFromTarkov_Data\Managed\Comfort.Unity.dll</HintPath>
+      <HintPath>$(EftManagedDir)\Comfort.Unity.dll</HintPath>
     </Reference>
     <Reference Include="CommonExtensions" HintPath="References\CommonExtensions.dll" Private="false" />
     <Reference Include="DissonanceVoip" HintPath="References\DissonanceVoip.dll" Private="false" />
     <Reference Include="DrakiaXYZ-BigBrain">
-      <HintPath>..\..\BepInEx\plugins\DrakiaXYZ-BigBrain.dll</HintPath>
+      <HintPath>$(BepInExPluginDir)\DrakiaXYZ-BigBrain.dll</HintPath>
     </Reference>
     <Reference Include="ItemComponent.Types" HintPath="References\ItemComponent.Types.dll" Private="false" />
     <Reference Include="Newtonsoft.Json" HintPath="References\Newtonsoft.Json.dll" Private="false" />
     <Reference Include="Sirenix.Serialization">
-      <HintPath>..\..\EscapeFromTarkov_Data\Managed\Sirenix.Serialization.dll</HintPath>
+      <HintPath>$(EftManagedDir)\Sirenix.Serialization.dll</HintPath>
     </Reference>
     <Reference Include="spt-common">
-      <HintPath>..\..\BepInEx\plugins\spt\spt-common.dll</HintPath>
+      <HintPath>$(BepInExPluginDir)\spt\spt-common.dll</HintPath>
     </Reference>
     <Reference Include="spt-core">
-      <HintPath>..\..\BepInEx\plugins\spt\spt-core.dll</HintPath>
+      <HintPath>$(BepInExPluginDir)\spt\spt-core.dll</HintPath>
     </Reference>
     <Reference Include="spt-custom">
-      <HintPath>..\..\BepInEx\plugins\spt\spt-custom.dll</HintPath>
+      <HintPath>$(BepInExPluginDir)\spt\spt-custom.dll</HintPath>
     </Reference>
     <Reference Include="spt-debugging">
-      <HintPath>..\..\BepInEx\plugins\spt\spt-debugging.dll</HintPath>
+      <HintPath>$(BepInExPluginDir)\spt\spt-debugging.dll</HintPath>
     </Reference>
     <Reference Include="spt-reflection">
-      <HintPath>..\..\BepInEx\plugins\spt\spt-reflection.dll</HintPath>
+      <HintPath>$(BepInExPluginDir)\spt\spt-reflection.dll</HintPath>
     </Reference>
     <Reference Include="spt-singleplayer">
-      <HintPath>..\..\BepInEx\plugins\spt\spt-singleplayer.dll</HintPath>
+      <HintPath>$(BepInExPluginDir)\spt\spt-singleplayer.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Postprocessing.Runtime">
-      <HintPath>..\..\EscapeFromTarkov_Data\Managed\Unity.Postprocessing.Runtime.dll</HintPath>
+      <HintPath>$(EftManagedDir)\Unity.Postprocessing.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\..\EscapeFromTarkov_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>$(EftManagedDir)\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy &quot;$(TargetPath)&quot; &quot;$(ProjectDir)\..\..\BepInEx\plugins\SAIN\$(TargetFileName)&quot;" />
+    <MakeDir Directories="$(BepInExPluginDir)\SAIN" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(BepInExPluginDir)\SAIN" />
   </Target>
 
 </Project>

@@ -1,5 +1,6 @@
 ﻿using EFT;
 using SAIN.Components;
+using SAIN.Helpers;
 using SAIN.Helpers.Events;
 using SAIN.Models.Enums;
 using SAIN.SAINComponent.Classes.EnemyClasses;
@@ -188,6 +189,8 @@ namespace SAIN.SAINComponent.Classes.Decision
 
                 ChangeDecisionTime = Time.time;
                 HasDecisionToggle.CheckToggle(hasDecision, ChangeDecisionTime);
+                SAINTrace.Log(
+                    $"DECISION changed: {SAINTrace.Bot(Bot)} prevCombat={PreviousCombatDecision}, combat={solo}, prevSquad={PreviousSquadDecision}, squad={squad}, prevSelf={PreviousSelfDecision}, self={self}, hasDecision={hasDecision}, {SAINTrace.Enemy(enemy)}");
                 OnDecisionMade?.Invoke(solo, squad, self, enemy, Bot);
             }
         }
@@ -219,6 +222,8 @@ namespace SAIN.SAINComponent.Classes.Decision
                 ChangeDecisionTime = Time.time;
                 HasDecisionToggle.CheckToggle(hasDecision, ChangeDecisionTime);
                 CurrentDecision = decision;
+                SAINTrace.Log(
+                    $"DECISION changed: {SAINTrace.Bot(Bot)} combat={decision.CombatDecision}, squad={decision.SquadDecision}, self={decision.SelfAction}, hasDecision={hasDecision}, {SAINTrace.Enemy(decision.Enemy)}");
                 OnDecisionMade?.Invoke(decision.CombatDecision, decision.SquadDecision, decision.SelfAction, decision.Enemy, Bot);
             }
         }

@@ -136,7 +136,7 @@ namespace SAIN.Editor
 
         public static bool Button(string text, string tooltip, EUISoundType? sound, GUIStyle style, params GUILayoutOption[] options)
         {
-            return Button(new GUIContent(text, tooltip), sound, options);
+            return Button(new GUIContent(text, tooltip), style, sound, options);
         }
 
         public static bool Button(GUIContent content, EUISoundType? sound, params GUILayoutOption[] options)
@@ -146,7 +146,9 @@ namespace SAIN.Editor
 
         public static bool Button(GUIContent content, GUIStyle style, EUISoundType? sound, params GUILayoutOption[] options)
         {
-            if (GUILayout.Button(content, style, options))
+            bool clicked = GUILayout.Button(content, style, options);
+            Rect rect = GUILayoutUtility.GetLastRect();
+            if (clicked || RawMouseClickInside(rect))
             {
                 CompareValuePlaySound(true, false, sound);
                 return true;
@@ -177,6 +179,10 @@ namespace SAIN.Editor
         public static bool Toggle(bool value, GUIContent content, GUIStyle style, EUISoundType? sound = null, params GUILayoutOption[] options)
         {
             bool newvalue = GUILayout.Toggle(value, content, style, options);
+            if (RawMouseClickInside(GUILayoutUtility.GetLastRect()))
+            {
+                newvalue = !value;
+            }
             bool soundPlayed = CompareValuePlaySound(value, newvalue, sound);
 #if DEBUG
             if (soundPlayed && SAINPlugin.DebugMode)
@@ -185,6 +191,21 @@ namespace SAIN.Editor
             }
 #endif
             return newvalue;
+        }
+
+        public static bool RawMouseClickInside(Rect rect)
+        {
+            Event current = Event.current;
+            if (current == null
+                || current.rawType != EventType.MouseUp
+                || current.button != 0
+                || !rect.Contains(current.mousePosition))
+            {
+                return false;
+            }
+
+            current.Use();
+            return true;
         }
 
         private static bool CompareValuePlaySound(object oldValue, object newValue, EUISoundType? sound = null, float volume = 1f)

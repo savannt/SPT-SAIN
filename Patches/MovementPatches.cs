@@ -12,6 +12,7 @@ using UnityEngine;
 
 namespace SAIN.Patches.Movement
 {
+#if false
     /// <summary>
     /// stops sideways sprinting
     /// </summary>
@@ -329,4 +330,5 @@ namespace SAIN.Patches.Movement
     //        return true;
     //    }
     //}
+#endif
 }

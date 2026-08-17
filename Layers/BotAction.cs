@@ -1,6 +1,7 @@
 ﻿using DrakiaXYZ.BigBrain.Brains;
 using EFT;
 using SAIN.Components;
+using SAIN.Helpers;
 using SAIN.SAINComponent.Classes;
 using SAIN.SAINComponent.Classes.EnemyClasses;
 using SAIN.SAINComponent.Classes.Mover;
@@ -77,10 +78,14 @@ namespace SAIN.Layers
         {
             BotOwner.PatrollingData.Pause();
             Bot.BotActivation.SetCurrentAction(this);
+            SAINTrace.Log(
+                $"ACTION start: name={Name}, type={GetType().Name}, {SAINTrace.Bot(Bot)}, combat={Bot.Decision.CurrentCombatDecision}, squad={Bot.Decision.CurrentSquadDecision}, self={Bot.Decision.CurrentSelfDecision}, {SAINTrace.Enemy(Bot.GoalEnemy)}");
         }
 
         public override void Stop()
         {
+            SAINTrace.Log(
+                $"ACTION stop: name={Name}, type={GetType().Name}, {SAINTrace.Bot(Bot)}, combat={Bot.Decision.CurrentCombatDecision}, squad={Bot.Decision.CurrentSquadDecision}, self={Bot.Decision.CurrentSelfDecision}, {SAINTrace.Enemy(Bot.GoalEnemy)}");
         }
 
         private BotComponent _bot;

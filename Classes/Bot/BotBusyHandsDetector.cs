@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using static EFT.Player;
-using HandEvent = GEventArgs1;
 
 namespace SAIN.SAINComponent.Classes
 {
@@ -37,8 +36,8 @@ namespace SAIN.SAINComponent.Classes
             if (_nextCheckTime < Time.time)
             {
                 _nextCheckTime = Time.time + CHECK_FREQ;
-                //checkBusyHands();
-                //checkBusyTooLong();
+                checkBusyHands();
+                checkBusyTooLong();
             }
         }
 
@@ -110,10 +109,6 @@ namespace SAIN.SAINComponent.Classes
 #endif
             resetHandsController(Player);
         }
-
-        private Dictionary<GEventArgs1, float> _OngoingEvents = new();
-        private List<HandEvent> _eventsToRemove = new();
-        private List<HandEvent> _events = new();
 
         // Credit to Lacyway's "Hands are Not Busy" mod https://github.com/Lacyway/HandsAreNotBusy/blob/main/HANB_Component.cs
         private static void resetHandsController(Player player)

@@ -16,7 +16,7 @@ namespace SAIN.Components.BotComponentSpace.Classes
         public static bool RefillMagsOnEachWeapon(BotComponent bot, BotWeaponManager weaponManager, int count = -1, bool includeActiveMag = false, params EquipmentSlot[] slotsToIgnore)
         {
             bool result = false;
-            foreach (var item in weaponManager.Info)
+            foreach (var item in weaponManager.info)
             {
                 if (item.Value?.weapon != null &&
                     IsMagFed(item.Value.weapon.ReloadMode))
@@ -44,7 +44,7 @@ namespace SAIN.Components.BotComponentSpace.Classes
         /// </summary>
         public static bool RefillMagsInSlot(EquipmentSlot slot, BotComponent bot, BotWeaponManager weaponManager, int count = -1, bool includeActiveMag = false)
         {
-            if (weaponManager.Info.TryGetValue(slot, out var weapon))
+            if (weaponManager.info.TryGetValue(slot, out var weapon))
             {
                 return BotMagazineWeapon.RefillMags(bot, weapon, count, includeActiveMag);
             }

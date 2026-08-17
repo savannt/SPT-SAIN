@@ -80,8 +80,7 @@ namespace SAIN.SAINComponent.Classes.Memory
             if (BotOwner.Memory.IsUnderFire &&
                 (LastUnderFireSource == null || LastUnderFireSource.HealthController.IsAlive == false))
             {
-                //Reset the UnderFireTime
-                BotOwner.Memory.Float_4 = Time.time;
+                // EFT 4.1 removed the old under-fire timer field.
             }
         }
 

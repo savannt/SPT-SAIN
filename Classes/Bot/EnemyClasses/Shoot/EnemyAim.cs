@@ -153,15 +153,14 @@ namespace SAIN.SAINComponent.Classes.EnemyClasses
             foreach (var part in enemyParts)
             {
                 totalCount++;
-                if (part.Value.IsVisible)
+                if (Enemy.EnemyInfo._allPartsVision.TryGetValue(part, out var partVision) && partVision.Visible)
                 {
                     visCount++;
                 }
             }
 
             totalCount++;
-            var bodyPart = Enemy.EnemyInfo.BodyData().Value;
-            if (bodyPart.IsVisible)
+            if (Enemy.EnemyInfo._allPartsVision.TryGetValue(BodyPartType.body, out var bodyPart) && bodyPart.Visible)
             {
                 visCount++;
             }

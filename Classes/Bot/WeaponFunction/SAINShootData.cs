@@ -1,6 +1,7 @@
 ﻿using EFT;
 using EFT.InventoryLogic;
 using SAIN.Components;
+using SAIN.Helpers;
 using SAIN.Preset.GlobalSettings;
 using SAIN.SAINComponent.Classes.EnemyClasses;
 using SAIN.SAINComponent.Classes.Info;
@@ -41,17 +42,20 @@ namespace SAIN.SAINComponent.Classes
             BotWeaponManager weaponManager = BotOwner.WeaponManager;
             if (weaponManager == null || !weaponManager.HaveBullets || weaponManager.Reload.Reloading)
             {
+                SAINTrace.Log($"SHOOT ending no weapon/bullets/reload: {SAINTrace.Bot(Bot)}, haveBullets={weaponManager?.HaveBullets}, reloading={weaponManager?.Reload?.Reloading}, {SAINTrace.Enemy(LastShotEnemy)}");
                 EndShoot();
                 return;
             }
             if (LastShotEnemy?.EnemyPlayer?.HealthController?.IsAlive != true)
             {
+                SAINTrace.Log($"SHOOT ending dead/missing enemy: {SAINTrace.Bot(Bot)}, {SAINTrace.Enemy(LastShotEnemy)}");
                 EndShoot();
                 LastShotEnemy = null;
                 return;
             }
             if (!BotOwner.ShootData.Shooting)
             {
+                SAINTrace.Log($"SHOOT ending vanilla shooting false: {SAINTrace.Bot(Bot)}, {SAINTrace.Enemy(LastShotEnemy)}");
                 EndShoot();
             }
         }
@@ -70,6 +74,10 @@ namespace SAIN.SAINComponent.Classes
 
         public void EndShoot()
         {
+            if (_shooting)
+            {
+                SAINTrace.Log($"SHOOT EndShoot: {SAINTrace.Bot(Bot)}, {SAINTrace.Enemy(LastShotEnemy)}");
+            }
             _shooting = false;
             BotOwner.ShootData?.EndShoot();
         }
@@ -96,12 +104,14 @@ namespace SAIN.SAINComponent.Classes
         {
             if (Bot.Decision.CurrentSelfDecision == ESelfActionType.Reload)
             {
+                SAINTrace.LogThrottled($"shoot-skip-reload-{Bot.ProfileId}", 0.5f, $"SHOOT skipped reload decision: {SAINTrace.Bot(Bot)}, {SAINTrace.Enemy(priorityEnemy)}");
                 return false;
             }
             if (Bot.Mover.Running && 
                 (Bot.Mover.ActivePath.CurrentSprintStatus == Mover.EBotSprintStatus.Running || 
                 Bot.Mover.ActivePath.CurrentSprintStatus == Mover.EBotSprintStatus.Turning))
             {
+                SAINTrace.LogThrottled($"shoot-skip-sprint-{Bot.ProfileId}", 0.5f, $"SHOOT skipped sprinting: {SAINTrace.Bot(Bot)}, sprintStatus={Bot.Mover.ActivePath.CurrentSprintStatus}, {SAINTrace.Enemy(priorityEnemy)}");
                 return false;
             }
             return GetEnemyToShoot(priorityEnemy) != null;
@@ -123,18 +133,27 @@ namespace SAIN.SAINComponent.Classes
         private bool AimAndShootAtEnemy(Enemy Enemy, BotComponent bot)
         {
             if (Enemy == null)
+            {
                 return false;
+            }
 
             if (Enemy.Player?.HealthController?.IsAlive == false)
+            {
+                SAINTrace.LogThrottled($"shoot-skip-dead-{bot.ProfileId}-{Enemy.EnemyProfileId}", 0.5f, $"SHOOT skipped dead enemy: {SAINTrace.Bot(bot)}, {SAINTrace.Enemy(Enemy)}");
                 return false;
+            }
 
             var weaponManager = bot.BotOwner.WeaponManager;
             if (weaponManager == null)
+            {
+                SAINTrace.LogThrottled($"shoot-skip-weapon-null-{bot.ProfileId}", 0.5f, $"SHOOT skipped weaponManager null: {SAINTrace.Bot(bot)}, {SAINTrace.Enemy(Enemy)}");
                 return false;
+            }
 
             bool reloading = weaponManager.Reload.Reloading;
             if (reloading || !weaponManager.HaveBullets)
             {
+                SAINTrace.LogThrottled($"shoot-skip-ammo-{bot.ProfileId}", 0.5f, $"SHOOT skipped ammo/reload: {SAINTrace.Bot(bot)}, reloading={reloading}, haveBullets={weaponManager.HaveBullets}, slot={weaponManager.Selector?.EquipmentSlot}, {SAINTrace.Enemy(Enemy)}");
                 if (!reloading && weaponManager.Selector.EquipmentSlot == EquipmentSlot.Holster && !weaponManager.Selector.TryChangeToMain())
                     SelectWeapon(Enemy);
 
@@ -142,7 +161,10 @@ namespace SAIN.SAINComponent.Classes
             }
 
             if (!bot.Aim.CanAim)
+            {
+                SAINTrace.LogThrottled($"shoot-skip-canaim-{bot.ProfileId}", 0.5f, $"SHOOT skipped CanAim false: {SAINTrace.Bot(bot)}, {SAINTrace.Enemy(Enemy)}");
                 return false;
+            }
 
             Vector3? target = GetAimTarget(Enemy, bot);
             if (target != null &&
@@ -152,9 +174,15 @@ namespace SAIN.SAINComponent.Classes
 
                 if (bot.Aim.AimAtTarget(target.Value, Enemy, out bool AimComplete, bot.BotOwner.AimingManager.CurrentAiming, bot))
                 {
+                    SAINTrace.LogThrottled($"shoot-aim-{bot.ProfileId}-{Enemy.EnemyProfileId}", 0.25f, $"SHOOT aiming: {SAINTrace.Bot(bot)}, target={SAINTrace.Vec(target.Value)}, aimComplete={AimComplete}, lastAimTime={bot.Aim.LastAimTime:0.00}, {SAINTrace.Enemy(Enemy)}");
                     ShootWhenAimComplete(Enemy, bot, AimComplete);
                     return true;
                 }
+                SAINTrace.LogThrottled($"shoot-aim-fail-{bot.ProfileId}-{Enemy.EnemyProfileId}", 0.5f, $"SHOOT AimAtTarget returned false: {SAINTrace.Bot(bot)}, target={SAINTrace.Vec(target.Value)}, {SAINTrace.Enemy(Enemy)}");
+            }
+            else
+            {
+                SAINTrace.LogThrottled($"shoot-no-target-{bot.ProfileId}-{Enemy.EnemyProfileId}", 0.5f, $"SHOOT no aim target: {SAINTrace.Bot(bot)}, {SAINTrace.Enemy(Enemy)}");
             }
             return false;
         }
@@ -168,6 +196,7 @@ namespace SAIN.SAINComponent.Classes
                 {
                     LastShotEnemy = Enemy;
                     _shooting = true;
+                    SAINTrace.Log($"SHOOT trigger press: {SAINTrace.Bot(bot)}, {SAINTrace.Enemy(Enemy)}");
                     bot.BotOwner.ShootData.Shoot();
                     Enemy.EnemyInfo?.SetLastShootTime();
                 }
@@ -329,7 +358,7 @@ namespace SAIN.SAINComponent.Classes
                 Vector3 value;
                 if (enemy.Distance < 6f)
                 {
-                    value = enemy.GetCenterPart();
+                    value = enemy.CurrPosition + Vector3.up;
                 }
                 else
                 {

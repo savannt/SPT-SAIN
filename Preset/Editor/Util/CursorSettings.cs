@@ -53,6 +53,13 @@ namespace SAIN.Editor
 
         public static void SetUnlockCursor(int lockState, bool cursorVisible)
         {
+            if (!_obsoleteCursor)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                return;
+            }
+
             if (_curLockState != null)
             {
                 // Do through reflection for unity 4 compat

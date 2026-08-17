@@ -93,12 +93,14 @@ namespace SAIN.Components.BotController
                 if (SAINEnableClass.IsSAINDisabledForBot(botOwner))
                 {
                     //Logger.LogDebug($"{botOwner.name} is excluded");
+                    global::SAIN.SAINPlugin.WriteStartupLog($"Bot excluded from SAIN: name={botOwner.name}, profile={botOwner.ProfileId}, role={botOwner.Profile?.Info?.Settings?.Role}");
                     botOwner.gameObject.AddComponent<SAINNoBushESP>().Init(botOwner);
                     return;
                 }
 
                 //Logger.LogDebug($"Adding SAIN to {botOwner.name}...");
                 botComponent = botOwner.gameObject.AddComponent<BotComponent>();
+                global::SAIN.SAINPlugin.WriteStartupLog($"Bot SAIN component added: name={botOwner.name}, profile={botOwner.ProfileId}, role={botOwner.Profile?.Info?.Settings?.Role}");
             }
             catch (Exception e)
             {
@@ -147,6 +149,7 @@ namespace SAIN.Components.BotController
             BotDictionary.Add(bot.ProfileId, bot);
             bot.PlayerComponent.InitializeBotComponent(bot);
             bot.BotOwner.LeaveData.OnLeave += RemoveBot;
+            global::SAIN.SAINPlugin.WriteStartupLog($"Bot SAIN activated: name={bot.name}, profile={bot.ProfileId}, role={bot.BotOwner.Profile?.Info?.Settings?.Role}, total={SAINBots.Count}");
             OnBotAdded?.Invoke(bot);
         }
         

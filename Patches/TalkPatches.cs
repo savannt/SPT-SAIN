@@ -6,6 +6,7 @@ using System.Reflection;
 
 namespace SAIN.Patches.Talk
 {
+#if false
     public class PlayerHurtPatch : ModulePatch
     {
         protected override MethodBase GetTargetMethod()
@@ -125,4 +126,5 @@ namespace SAIN.Patches.Talk
                 !SAINEnableClass.GetSAIN(__instance.BotOwner_0.ProfileId, out _);
         }
     }
+#endif
 }

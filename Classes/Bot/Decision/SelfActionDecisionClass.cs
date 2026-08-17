@@ -660,6 +660,7 @@ namespace SAIN.SAINComponent.Classes.Decision
         /// <summary>
         /// Add a callback for sain bots when a bot finishes using first aid.
         /// </summary>
+#if false
         public class BotFirstAidCallBackPatch : ModulePatch
         {
             protected override MethodBase GetTargetMethod()
@@ -680,5 +681,6 @@ namespace SAIN.SAINComponent.Classes.Decision
                 }
             }
         }
+#endif
     }
 }

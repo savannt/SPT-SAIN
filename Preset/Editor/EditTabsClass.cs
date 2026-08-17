@@ -64,10 +64,11 @@ namespace SAIN.Editor
 
         public static EEditorTab TabSelectMenu(float minHeight = 30, float speed = 3, float closeSpeedMulti = 0.66f)
         {
-            if (TabMenuRect == null || TabRects == null)
+            if (TabRects == null || !Mathf.Approximately(_lastTabMenuWidth, MainWindow.width))
             {
                 TabMenuRect = new Rect(0, ExitRect.height + TabMenuVerticalMargin, MainWindow.width, TabMenuHeight);
                 TabRects = BuilderClass.HorizontalGridRects(TabMenuRect, Tabs.Length, minHeight);
+                _lastTabMenuWidth = MainWindow.width;
             }
 
             string openTabString = BuilderClass.SelectionGridExpandHeight(TabMenuRect, Tabs, TabClasses[SelectedTab].Name, TabRects, minHeight, speed, closeSpeedMulti, TabTooltips);
@@ -83,6 +84,7 @@ namespace SAIN.Editor
         }
 
         private static Rect[] TabRects;
+        private static float _lastTabMenuWidth;
         public static Rect TabMenuRect;
 
         public static void BeginScrollView()

@@ -147,11 +147,6 @@ namespace SAIN.Preset.GlobalSettings
             power += RolePower(playerComponent.Player.Profile.Info.Settings.Role);
             power += ArmorPower(playerComponent.Player);
 
-            if (playerComponent.Player.AIData is PlayerAIDataClass aiData)
-            {
-                aiData.PowerOfEquipment = power;
-            }
-
             return true;
         }
 

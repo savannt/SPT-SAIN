@@ -294,15 +294,21 @@ namespace SAIN.Layers
 
         private static float getPercentSpotted(Enemy enemy, out BodyPartType partType)
         {
-            float highestPercent = enemy.EnemyInfo.BodyData().Value?.GetVisibilityLevel() ?? 0f;
+            float highestPercent = enemy.EnemyInfo._allPartsVision.TryGetValue(BodyPartType.body, out var bodyPartVision)
+                ? bodyPartVision.VisibilityLevel
+                : 0f;
             partType = BodyPartType.body;
             foreach (var part in enemy.EnemyInfo.AllActiveParts)
             {
-                float percent = part.Value.GetVisibilityLevel();
+                if (!enemy.EnemyInfo._allPartsVision.TryGetValue(part, out var partVision))
+                {
+                    continue;
+                }
+                float percent = partVision.VisibilityLevel;
                 if (percent > highestPercent)
                 {
                     highestPercent = percent;
-                    partType = part.Key.BodyPartType;
+                    partType = part;
                 }
             }
 

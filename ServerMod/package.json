@@ -1,10 +1,10 @@
 {
     "name": "SAIN",
-    "version": "2.3.0",
+    "version": "2.3.0-spt412-local",
     "main": "src/mod.js",
     "license": "MIT",
     "author": "zSolarint",
-    "sptVersion": "~3.11.0",
+    "sptVersion": "~4.1.0",
     "scripts": {
         "setup": "npm i",
         "build": "node ./build.mjs",

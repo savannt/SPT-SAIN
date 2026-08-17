@@ -13,6 +13,7 @@ using UnityEngine;
 
 namespace SAIN.Patches.Vision
 {
+#if false
     public class UpdateLightEnablePatch : ModulePatch
     {
         protected override MethodBase GetTargetMethod()
@@ -457,9 +458,9 @@ namespace SAIN.Patches.Vision
 
                 if (!flashLight.WhiteLight && !flashLight.Laser)
                 {
-                    (____player.AIData as PlayerAIDataClass).UsingLight = false;
                 }
             }
         }
     }
+#endif
 }

@@ -9,6 +9,7 @@ using static SAIN.Helpers.Shoot;
 
 namespace SAIN.Patches.Shoot.RateOfFire
 {
+#if false
     public class BotShootPatch : ModulePatch
     {
         protected override MethodBase GetTargetMethod()
@@ -60,4 +61,5 @@ namespace SAIN.Patches.Shoot.RateOfFire
             return false;
         }
     }
+#endif
 }

@@ -11,7 +11,7 @@
         public const string Trademark = "";
         public const string Culture = "";
 
-        public const int TarkovVersion = 35392;
+        public const int TarkovVersion = 40743;
 
         public const string EscapeFromTarkov = "EscapeFromTarkov.exe";
 
@@ -21,7 +21,7 @@
         public const string SAINPresetVersion = "4.1.1";
 
         public const string SPTGUID = "com.SPT.core";
-        public const string SPTVersion = "4.0.0";
+        public const string SPTVersion = "4.1.0";
 
         public const string BigBrainGUID = "xyz.drakia.bigbrain";
         public const string BigBrainVersion = "1.0.0";

@@ -401,16 +401,16 @@ namespace SAIN.Editor
 
                 GUIStyle style = StyleHandler(selected, hovering);
 
-                bool toggleActivated = GUI.Button(optionRects[i], new GUIContent(option, tooltip), style);
+                bool toggleActivated = GUI.Button(optionRects[i], new GUIContent(option, tooltip), style) || RawMouseClickInside(optionRects[i]);
                 if (toggleActivated && selected)
                 {
-                    Sounds.PlaySound(EUISoundType.ButtonClick);
                     selectedOption = "None";
+                    Sounds.PlaySound(EUISoundType.ButtonClick);
                 }
                 if (toggleActivated && !selected)
                 {
-                    Sounds.PlaySound(EUISoundType.ButtonClick);
                     selectedOption = option;
+                    Sounds.PlaySound(EUISoundType.ButtonClick);
                 }
             }
             EndGroup();
@@ -448,16 +448,16 @@ namespace SAIN.Editor
                 optionRects[i] = AnimateWidth(optionRects[i], selected, menuRect.width, out bool hovering, min, incPerFrame, closeMulti);
 
                 GUIStyle style = StyleHandler(selected, hovering);
-                bool toggleActivated = GUI.Button(optionRects[i], option, style);
+                bool toggleActivated = GUI.Button(optionRects[i], option, style) || RawMouseClickInside(optionRects[i]);
                 if (toggleActivated && selected)
                 {
-                    Sounds.PlaySound(EUISoundType.ButtonClick);
                     selectedOption = "None";
+                    Sounds.PlaySound(EUISoundType.ButtonClick);
                 }
                 if (toggleActivated && !selected)
                 {
-                    Sounds.PlaySound(EUISoundType.ButtonClick);
                     selectedOption = option;
+                    Sounds.PlaySound(EUISoundType.ButtonClick);
                 }
             }
             EndGroup();
@@ -476,9 +476,12 @@ namespace SAIN.Editor
                 GUIStyle style = StyleHandler(selected, hovering);
 
                 bool toggleActivated = GUI.Toggle(optionRects[i], selected, option, style);
+                if (RawMouseClickInside(optionRects[i]))
+                {
+                    toggleActivated = !selected;
+                }
                 if (toggleActivated != selected)
                 {
-                    Sounds.PlaySound(EUISoundType.MenuDropdownSelect);
                     if (selected)
                     {
                         selectedList.Remove(option);
@@ -487,6 +490,7 @@ namespace SAIN.Editor
                     {
                         selectedList.Add(option);
                     }
+                    Sounds.PlaySound(EUISoundType.MenuDropdownSelect);
                 }
             }
         }

@@ -100,11 +100,11 @@ namespace SAIN.SAINComponent.Classes.Info
             {
                 foreach (Mod mod in mods)
                 {
-                    if (CheckItemType(mod.GetType()) == ModType)
+                    if (CheckItemType(mod) == ModType)
                         return mod;
                     Slot[] Slots = mod.Slots;
                     foreach (Slot slot in Slots)
-                        if (slot.ContainedItem is Mod ContainedMod && CheckItemType(ContainedMod.GetType()) == ModType)
+                        if (slot.ContainedItem is Mod ContainedMod && CheckItemType(ContainedMod) == ModType)
                             return ContainedMod;
                 }
             }
@@ -120,22 +120,22 @@ namespace SAIN.SAINComponent.Classes.Info
             return SAINPlugin.LoadedPreset.GlobalSettings.Hearing.SuppressorModifier;
         }
 
-        private static EModType CheckItemType(Type type)
+        private static EModType CheckItemType(Mod mod)
         {
-            if (CheckTemplateType(type, SuppressorTypeId))
+            if (CheckTemplateType(mod, SuppressorTypeId))
             {
                 return EModType.Suppressor;
             }
             for (int i = 0; i < RedDotTypes.Length; i++)
             {
-                if (CheckTemplateType(type, RedDotTypes[i]))
+                if (CheckTemplateType(mod, RedDotTypes[i]))
                 {
                     return EModType.RedDot;
                 }
             }
             for (int i = 0; i < OpticTypes.Length; i++)
             {
-                if (CheckTemplateType(type, OpticTypes[i]))
+                if (CheckTemplateType(mod, OpticTypes[i]))
                 {
                     return EModType.Optic;
                 }
@@ -143,17 +143,9 @@ namespace SAIN.SAINComponent.Classes.Info
             return EModType.None;
         }
 
-        private static bool CheckTemplateType(Type modType, string id)
+        private static bool CheckTemplateType(Mod mod, string id)
         {
-            if (TemplateIdToObjectMappingsClass.TypeTable.TryGetValue(id, out Type result) && result == modType)
-            {
-                return true;
-            }
-            if (TemplateIdToObjectMappingsClass.TemplateTypeTable.TryGetValue(id, out result) && result == modType)
-            {
-                return true;
-            }
-            return false;
+            return mod?.Template != null && (mod.Template.StringId == id || mod.Template.IsChildOf(id));
         }
 
         private static EWeaponClass TryGetWeaponClass(Weapon weapon)

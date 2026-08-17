@@ -3,10 +3,6 @@ using EFT.InventoryLogic;
 using SAIN.Components;
 using System.Collections.Generic;
 using UnityEngine;
-using FractureEffect = GInterface325;
-using HeavyBleedEffect = GInterface323;
-using LightBleedEffect = GInterface322;
-using PainEffect = GInterface340;
 
 namespace SAIN.SAINComponent.Classes
 {
@@ -80,8 +76,8 @@ namespace SAIN.SAINComponent.Classes
                 return false;
             }
             BotOwner.Medecine.FirstAid.CurUsingMeds = item;
-            BotOwner.Medecine.FirstAid.Nullable_0 = EBodyPart.Chest;
-            BotOwner.Medecine.FirstAid.method_3();
+            BotOwner.Medecine.FirstAid._bodyPartToHeal = EBodyPart.Chest;
+            BotOwner.Medecine.FirstAid.TryApplyToCurrentPart();
             return true;
         }
 
@@ -119,7 +115,7 @@ namespace SAIN.SAINComponent.Classes
             return null;
         }
 
-        public void OnHealthEffectStarted(IEffect obj)
+        public void OnHealthEffectStarted(EFT.HealthSystem.IHealthEffect obj)
         {
             if (obj is FractureEffect)
             {

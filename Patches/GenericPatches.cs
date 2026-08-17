@@ -9,10 +9,9 @@ using SAIN.Helpers;
 using SPT.Reflection.Patching;
 using System.Reflection;
 using UnityEngine;
-using ExecuteRequestAction = GClass81;
-using FoodAndMedsEquipCallbackType = GInterface185;
-using QuickGrenadeUseCallbackType = GInterface188;
-using SetInHandsMedsStruct = GStruct375<EBodyPart>;
+using FoodAndMedsEquipCallbackType = EFT.IMedsController;
+using QuickGrenadeUseCallbackType = EFT.IQuickGrenadeThrowController;
+using SetInHandsMedsStruct = EFT.NetworkPackets.OneAndList<EBodyPart>;
 
 namespace SAIN.Patches.Generic
 {
@@ -28,6 +27,7 @@ namespace SAIN.Patches.Generic
         }
     }
 
+#if false
     namespace SetInHands
     {
         public static class Helpers
@@ -256,6 +256,7 @@ namespace SAIN.Patches.Generic
         }
     }
 
+#if false
     public class StopRequestExecutePatch : ModulePatch
     {
         protected override MethodBase GetTargetMethod()
@@ -297,6 +298,7 @@ namespace SAIN.Patches.Generic
             BotManagerComponent.Instance?.PlayerEnviromentChanged(__instance?.Player?.ProfileId, trigger);
         }
     }
+#endif
 
     public class AddPointToSearchPatch : ModulePatch
     {
@@ -510,4 +512,5 @@ namespace SAIN.Patches.Generic
             return true;
         }
     }
+#endif
 }

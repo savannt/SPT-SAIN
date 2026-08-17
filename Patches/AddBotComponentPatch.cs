@@ -79,6 +79,9 @@ namespace SAIN.Patches.Components
 
     internal class WorldTickPatch : ModulePatch
     {
+        public static float LastWorldTickTime { get; private set; }
+        private static float _nextLogTime;
+
         protected override MethodBase GetTargetMethod()
         {
             return AccessTools.Method(typeof(GameWorld), nameof(GameWorld.DoWorldTick));
@@ -87,7 +90,22 @@ namespace SAIN.Patches.Components
         [PatchPostfix]
         public static void Patch(GameWorld __instance, float dt)
         {
-            GameWorldComponent.Instance?.WorldTick(dt);
+            LastWorldTickTime = Time.realtimeSinceStartup;
+            if (_nextLogTime < LastWorldTickTime)
+            {
+                _nextLogTime = LastWorldTickTime + 5f;
+                SAINPlugin.WriteStartupLog($"WorldTick alive. dt={dt:0.000}, gameWorld={__instance != null}, sainWorld={GameWorldComponent.Instance != null}");
+            }
+
+            try
+            {
+                GameWorldComponent.Instance?.WorldTick(dt);
+            }
+            catch (Exception ex)
+            {
+                SAINPlugin.WriteStartupLog($"WorldTick failed: {ex}");
+                Logger.LogError($"SAIN WorldTick failed: {ex}");
+            }
         }
     }
 
@@ -116,19 +134,22 @@ namespace SAIN.Patches.Components
     /// </summary>
     internal class DisableBotUpdateByUnityPatch : ModulePatch
     {
+        private static float _nextFallbackLogTime;
+
         protected override MethodBase GetTargetMethod()
         {
-            return AccessTools.Method(typeof(BotsController), nameof(BotsController.method_0));
+            return AccessTools.Method(typeof(BotsController), nameof(BotsController.UpdateByUnity));
         }
 
         [PatchPrefix]
         public static bool Patch()
         {
-            if (GameWorldComponent.Instance == null)
+            if (_nextFallbackLogTime < Time.realtimeSinceStartup)
             {
-                return true;
+                _nextFallbackLogTime = Time.realtimeSinceStartup + 10f;
+                SAINPlugin.WriteStartupLog("Vanilla BotsController.UpdateByUnity allowed for SPT 4.1.2 compatibility.");
             }
-            return false;
+            return true;
         }
     }
 

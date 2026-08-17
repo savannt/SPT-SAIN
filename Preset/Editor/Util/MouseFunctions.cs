@@ -11,6 +11,7 @@ namespace SAIN.Editor.Util
 
         public static void OnGUI()
         {
+            checkMouseEvents();
         }
 
         public static bool CheckMouseDrag()
@@ -34,6 +35,11 @@ namespace SAIN.Editor.Util
 
         private static void checkMouseEvents()
         {
+            if (Event.current == null)
+            {
+                return;
+            }
+
             Vector2 mousePos = Event.current.mousePosition;
             if ((mousePos - _lastMousePos).sqrMagnitude > 0.001f)
             {

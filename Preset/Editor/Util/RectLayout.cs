@@ -16,21 +16,31 @@ namespace SAIN.Editor
             return new Vector2(scaling, scaling);
         }
 
-        public static Rect MainWindow = new(0, 0, 1920, 1080);
+        public static Rect MainWindow = new(0, 0, Screen.width, Screen.height);
 
         private const float RectHeight = 30f;
         private const float ExitWidth = 30f;
         private const float SaveAllWidth = 175f;
         private const float AdvWidth = 225f;
 
-        private static readonly float ExitStartX = MainWindow.width - ExitWidth;
-        private static readonly float SaveAllStartX = ExitStartX - SaveAllWidth - 5;
-        private static readonly float AdvRectStartX = SaveAllStartX - AdvWidth - 5;
-        private static readonly float DragWidth = AdvRectStartX - 5;
+        public static Rect ExitRect;
+        public static Rect DragRect;
+        public static Rect SaveAllRect;
+        public static Rect AdvRect;
 
-        public static Rect ExitRect = new(ExitStartX, 0, ExitWidth, RectHeight);
-        public static Rect DragRect = new(0, 0, DragWidth, RectHeight);
-        public static Rect SaveAllRect = new(SaveAllStartX, 0, SaveAllWidth, RectHeight);
-        public static Rect AdvRect = new(AdvRectStartX, 0, AdvWidth, RectHeight);
+        public static void UpdateForScreen()
+        {
+            MainWindow = new Rect(0, 0, Screen.width, Screen.height);
+
+            float exitStartX = MainWindow.width - ExitWidth;
+            float saveAllStartX = exitStartX - SaveAllWidth - 5;
+            float advRectStartX = saveAllStartX - AdvWidth - 5;
+            float dragWidth = advRectStartX - 5;
+
+            ExitRect = new Rect(exitStartX, 0, ExitWidth, RectHeight);
+            DragRect = new Rect(0, 0, dragWidth, RectHeight);
+            SaveAllRect = new Rect(saveAllStartX, 0, SaveAllWidth, RectHeight);
+            AdvRect = new Rect(advRectStartX, 0, AdvWidth, RectHeight);
+        }
     }
 }

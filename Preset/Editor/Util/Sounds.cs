@@ -19,15 +19,22 @@ namespace SAIN.Editor
 
         public static void PlaySound(EUISoundType soundType, float volume = 1f)
         {
-            volume = Mathf.Clamp(volume, 0f, 1f);
-            if (_soundsWrapper == null)
+            try
             {
-                getWrapper();
+                volume = Mathf.Clamp(volume, 0f, 1f);
+                if (_soundsWrapper == null)
+                {
+                    getWrapper();
+                }
+                if (SoundLimiter < Time.time)
+                {
+                    SoundLimiter = Time.time + 0.05f;
+                    playSound(soundType, volume);
+                }
             }
-            if (SoundLimiter < Time.time)
+            catch (System.Exception ex)
             {
-                SoundLimiter = Time.time + 0.05f;
-                playSound(soundType, volume);
+                global::SAIN.SAINPlugin.WriteStartupLog($"Editor sound skipped: {soundType} failed with {ex.GetType().Name}: {ex.Message}");
             }
         }
 

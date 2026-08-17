@@ -115,9 +115,9 @@ namespace SAIN.SAINComponent.Classes.WeaponFunction
             {
                 return; // Avoid rapid toggling of ADS
             }
-            if (BotOwner.AimingManager.CurrentAiming is BotAimingClass aimingClass)
+            if (BotOwner.AimingManager.CurrentAiming is BotAimingData aimingData)
             {
-                aimingClass.HardAim = value;
+                aimingData.HardAim = value;
             }
             var shootController = BotOwner.WeaponManager.ShootController;
             if (shootController != null && shootController.IsAiming != value)

@@ -76,7 +76,7 @@ namespace SAIN.Components.BotComponentSpace.Classes
                 full++;
                 return;
             }
-            weapon.Reload.method_2(weapon.weapon, mag);
+            weapon.Reload.AddAmmoToMag(weapon.weapon, mag);
             refilled++;
         }
 

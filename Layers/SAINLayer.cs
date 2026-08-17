@@ -40,6 +40,12 @@ namespace SAIN.Layers
 
         protected void CheckActiveChanged(bool isActiveNow)
         {
+            if (_wasActive != isActiveNow && Bot != null)
+            {
+                SAINPlugin.WriteStartupLog(
+                    $"Layer {(isActiveNow ? "ACTIVE" : "inactive")}: layer={LayerName}, bot={Bot.name}, profile={Bot.ProfileId}, role={Bot.BotOwner.Profile?.Info?.Settings?.Role}, enemy={Bot.GoalEnemy?.EnemyProfileId}");
+            }
+
             if (isActiveNow)
             {
                 BotOwner.PatrollingData.Pause();

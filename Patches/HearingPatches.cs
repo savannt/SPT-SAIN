@@ -10,12 +10,13 @@ using SPT.Reflection.Patching;
 using System.Reflection;
 using Systems.Effects;
 using UnityEngine;
-using StepAudioController = GClass1184;
+using StepAudioController = Audio.AudioWeatherSystem.FakePlayerStepAudioController;
 
 // this._specificStepAudioController = new GClass1184(surfaceSet, this, 0.1f, useOcclusion);
 
 namespace SAIN.Patches.Hearing
 {
+#if false
     public class GrenadeCollisionPatch : ModulePatch
     {
         protected override MethodBase GetTargetMethod()
@@ -585,4 +586,5 @@ namespace SAIN.Patches.Hearing
             }
         }
     }
+#endif
 }
