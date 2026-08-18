@@ -1,0 +1,14 @@
+{
+  "Description": "Names are not case sensitive. Any bot nick name that contains one of the entries here will be forced to use the matching personality.",
+  "NicknamePersonalityMatches": {
+    "steve": 1,
+    "solarint": 3,
+    "lvndmark": 2,
+    "chomp": 4,
+    "senko": 4,
+    "kaeno": 6,
+    "justnu": 6,
+    "ratthew": 5,
+    "choccy": 5
+  }
+}

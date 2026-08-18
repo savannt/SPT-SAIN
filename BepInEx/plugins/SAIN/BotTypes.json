@@ -1,0 +1,268 @@
+[
+  {
+    "Name": "Scav",
+    "Description": "Scavs!",
+    "Section": "Scavs",
+    "WildSpawnType": 1,
+    "BaseBrain": null
+  },
+  {
+    "Name": "Scav Group",
+    "Description": "Scavs in a Group!",
+    "Section": "Scavs",
+    "WildSpawnType": 19,
+    "BaseBrain": null
+  },
+  {
+    "Name": "Crazy Scav Event",
+    "Description": "Scavs!",
+    "Section": "Scavs",
+    "WildSpawnType": 37,
+    "BaseBrain": null
+  },
+  {
+    "Name": "Usec",
+    "Description": "A PMC of the Usec Faction",
+    "Section": "PMCs",
+    "WildSpawnType": 52,
+    "BaseBrain": null
+  },
+  {
+    "Name": "Bear",
+    "Description": "A PMC of the Bear Faction",
+    "Section": "PMCs",
+    "WildSpawnType": 51,
+    "BaseBrain": null
+  },
+  {
+    "Name": "Tagged and Cursed Scav",
+    "Description": "The type a scav is assigned when the player is marked as Tagged and Cursed",
+    "Section": "Scavs",
+    "WildSpawnType": 10,
+    "BaseBrain": null
+  },
+  {
+    "Name": "Knight",
+    "Description": "Goons leader. Close proximity to the goons has been noted to cause smashed keyboards",
+    "Section": "Goons",
+    "WildSpawnType": 26,
+    "BaseBrain": null
+  },
+  {
+    "Name": "BigPipe",
+    "Description": "Goons follower. Close proximity to the goons has been noted to cause smashed keyboards\"",
+    "Section": "Goons",
+    "WildSpawnType": 27,
+    "BaseBrain": null
+  },
+  {
+    "Name": "BirdEye",
+    "Description": "Goons follower. Close proximity to the goons has been noted to cause smashed keyboards\"",
+    "Section": "Goons",
+    "WildSpawnType": 28,
+    "BaseBrain": null
+  },
+  {
+    "Name": "Rogue",
+    "Description": "Ex Usec Personel on Lighthouse usually found around the water treatment plant",
+    "Section": "Other",
+    "WildSpawnType": 24,
+    "BaseBrain": null
+  },
+  {
+    "Name": "Raider",
+    "Description": "Heavily armed scavs typically found on reserve and Labs by default",
+    "Section": "Other",
+    "WildSpawnType": 9,
+    "BaseBrain": null
+  },
+  {
+    "Name": "Bloodhound",
+    "Description": "From the Live Event, nearly identical to raiders except with different voicelines and better gear. Found in",
+    "Section": "Other",
+    "WildSpawnType": 35,
+    "BaseBrain": null
+  },
+  {
+    "Name": "Cultist Priest",
+    "Description": "Found on Customs, Woods, Factory, Shoreline at night",
+    "Section": "Other",
+    "WildSpawnType": 21,
+    "BaseBrain": null
+  },
+  {
+    "Name": "Cultist",
+    "Description": "Found on Customs, Woods, Factory, Shoreline at night",
+    "Section": "Other",
+    "WildSpawnType": 20,
+    "BaseBrain": null
+  },
+  {
+    "Name": "Killa",
+    "Description": "He shoot. Found on Interchange and Streets",
+    "Section": "Bosses",
+    "WildSpawnType": 6,
+    "BaseBrain": null
+  },
+  {
+    "Name": "Partisan",
+    "Description": "Crazy mall santa",
+    "Section": "Bosses",
+    "WildSpawnType": 47,
+    "BaseBrain": null
+  },
+  {
+    "Name": "Rashala",
+    "Description": "Customs Boss",
+    "Section": "Bosses",
+    "WildSpawnType": 3,
+    "BaseBrain": null
+  },
+  {
+    "Name": "Rashala Guard",
+    "Description": "Customs Boss Follower",
+    "Section": "Followers",
+    "WildSpawnType": 5,
+    "BaseBrain": null
+  },
+  {
+    "Name": "Shturman",
+    "Description": "Woods Boss",
+    "Section": "Bosses",
+    "WildSpawnType": 7,
+    "BaseBrain": null
+  },
+  {
+    "Name": "Shturman Guard",
+    "Description": "Woods Boss Follower",
+    "Section": "Followers",
+    "WildSpawnType": 8,
+    "BaseBrain": null
+  },
+  {
+    "Name": "Tagilla",
+    "Description": "He Smash",
+    "Section": "Bosses",
+    "WildSpawnType": 22,
+    "BaseBrain": null
+  },
+  {
+    "Name": "Tagilla Guard",
+    "Description": "They Smash Too?",
+    "Section": "Followers",
+    "WildSpawnType": 23,
+    "BaseBrain": null
+  },
+  {
+    "Name": "Sanitar",
+    "Description": "Shoreline Boss",
+    "Section": "Bosses",
+    "WildSpawnType": 17,
+    "BaseBrain": null
+  },
+  {
+    "Name": "Sanitar Guard",
+    "Description": "Shoreline Boss Follower",
+    "Section": "Followers",
+    "WildSpawnType": 16,
+    "BaseBrain": null
+  },
+  {
+    "Name": "Gluhar",
+    "Description": "Reserve Boss. Also can be found on Streets.",
+    "Section": "Bosses",
+    "WildSpawnType": 11,
+    "BaseBrain": null
+  },
+  {
+    "Name": "Gluhar Guard Snipe",
+    "Description": "Reserve Boss Follower",
+    "Section": "Followers",
+    "WildSpawnType": 15,
+    "BaseBrain": null
+  },
+  {
+    "Name": "Gluhar Guard Scout",
+    "Description": "Reserve Boss Follower",
+    "Section": "Followers",
+    "WildSpawnType": 14,
+    "BaseBrain": null
+  },
+  {
+    "Name": "Gluhar Guard Security",
+    "Description": "Reserve Boss Follower",
+    "Section": "Followers",
+    "WildSpawnType": 13,
+    "BaseBrain": null
+  },
+  {
+    "Name": "Gluhar Guard Assault",
+    "Description": "Reserve Boss Follower",
+    "Section": "Followers",
+    "WildSpawnType": 12,
+    "BaseBrain": null
+  },
+  {
+    "Name": "Kaban",
+    "Description": "Streets Gangster",
+    "Section": "Bosses",
+    "WildSpawnType": 32,
+    "BaseBrain": null
+  },
+  {
+    "Name": "Kaban Guard",
+    "Description": "Gangster Cannon Fodder",
+    "Section": "Followers",
+    "WildSpawnType": 33,
+    "BaseBrain": null
+  },
+  {
+    "Name": "Basmach",
+    "Description": "Gangster 1",
+    "Section": "Followers",
+    "WildSpawnType": 41,
+    "BaseBrain": null
+  },
+  {
+    "Name": "Gus",
+    "Description": "Gangster 2",
+    "Section": "Followers",
+    "WildSpawnType": 42,
+    "BaseBrain": null
+  },
+  {
+    "Name": "Kaban Sniper",
+    "Description": "Gangster Sniper",
+    "Section": "Followers",
+    "WildSpawnType": 36,
+    "BaseBrain": null
+  },
+  {
+    "Name": "Kollontay",
+    "Description": "Crooked Cop",
+    "Section": "Bosses",
+    "WildSpawnType": 43,
+    "BaseBrain": null
+  },
+  {
+    "Name": "Kollantay Assault",
+    "Description": "Aggressive Guard",
+    "Section": "Followers",
+    "WildSpawnType": 44,
+    "BaseBrain": null
+  },
+  {
+    "Name": "Kollantay Security",
+    "Description": "Defensive Guard",
+    "Section": "Followers",
+    "WildSpawnType": 45,
+    "BaseBrain": null
+  },
+  {
+    "Name": "Partisan",
+    "Description": "A scav legend.. who scavs hate",
+    "Section": "Bosses",
+    "WildSpawnType": 47,
+    "BaseBrain": null
+  }
+]

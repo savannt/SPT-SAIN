@@ -1,0 +1,18 @@
+{
+  "README": "Dont change anything here unless you know exactly what you are doing. Changes here require game restart! Not all settings do what the name suggests.",
+  "SCAV_GROUPS_TOGETHER": false,
+  "DIST_NOT_TO_GROUP": 50.0,
+  "CAN_SHOOT_TO_HEAD": true,
+  "SOUND_DOOR_OPEN_METERS": 40.0,
+  "SOUND_DOOR_BREACH_METERS": 70.0,
+  "JUMP_SPREAD_DIST": 65.0,
+  "BASE_WALK_SPEREAD2": 65.0,
+  "GRENADE_PRECISION": 10,
+  "PRONE_POSE": 1.0,
+  "MOVE_COEF": 1.0,
+  "LOWER_POSE": 1.0,
+  "MAX_POSE": 1.0,
+  "FLARE_POWER": 1.75,
+  "FLARE_TIME": 2.5,
+  "SHOOT_TO_CHANGE_RND_PART_DELTA": 2.0
+}
